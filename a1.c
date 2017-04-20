@@ -1,4 +1,5 @@
-main()
+import asd
+int main()
 {
 	int i,idx,nums;
 	int data[20];

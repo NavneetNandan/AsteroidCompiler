@@ -1,0 +1,2584 @@
+Terminals unused in grammar
+
+   _else
+   _struct
+   _colon
+   _void
+   _charcons
+
+
+Rules useless in parser due to conflicts
+
+   69 Expr: _num
+
+
+State 57 conflicts: 16 reduce/reduce
+State 58 conflicts: 16 reduce/reduce
+State 64 conflicts: 2 shift/reduce
+State 65 conflicts: 3 shift/reduce
+State 118 conflicts: 1 shift/reduce, 14 reduce/reduce
+State 132 conflicts: 3 shift/reduce
+
+
+Grammar
+
+    0 $accept: Stmt $end
+
+    1 Stmt: program
+
+    2 $@1: %empty
+
+    3 program: importlist $@1 declarationList
+
+    4 importlist: importlist importstmnt
+    5           | importstmnt
+
+    6 importstmnt: _import _id
+
+    7 declarationList: Pgm
+
+    8 Pgm: _int _main _leftp _rightp _leftb statementList _rightb _eofile
+
+    9 statementList: statementList statement
+   10              | statement
+
+   11 statement: expressionStmt
+   12          | vardeclaration
+   13          | selectionStmt
+   14          | whileStmt
+   15          | forStmt
+   16          | breakStmt
+
+   17 expressionStmt: expression _semicolon
+
+   18 vardeclaration: typeSpecifier varList _semicolon
+
+   19 varList: varList _comma mutable
+   20        | mutable
+
+   21 mutable: _id
+   22        | _id dimList
+
+   23 dimList: dimList _leftsp _num _rightsp
+   24        | _leftsp _num _rightsp
+
+   25 typeSpecifier: _char
+   26              | _short
+   27              | _int
+   28              | _long
+   29              | _float
+   30              | _double
+
+   31 Expr: sumExpression
+
+   32 sumop: _plus
+   33      | _minus
+
+   34 expression: LValue _assign Expr
+   35           | LValue _assign expression
+
+   36 LValue: _id
+   37       | arrayDims
+
+   38 arrayDims: arrayDims _leftsp Expr _rightsp
+   39          | _id _leftsp Expr _rightsp
+
+   40 sumExpression: sumExpression sumop term
+   41              | term
+
+   42 mulop: _mul
+   43      | _div
+   44      | _modulo
+
+   45 term: term mulop unaryExpression
+   46     | unaryExpression
+
+   47 unaryExpression: sumop unaryExpression
+   48                | factor
+
+   49 factor: mutable
+   50       | immutable
+
+   51 immutable: _leftp expression _rightp
+   52          | _num
+
+   53 Expr: Expr _plus Expr
+   54     | Expr _minus Expr
+   55     | Expr _mul Expr
+   56     | Expr _div Expr
+   57     | Expr _modulo Expr
+   58     | _uminus Expr
+   59     | Expr _lt Expr
+   60     | Expr _le Expr
+   61     | Expr _ge Expr
+   62     | Expr _gt Expr
+   63     | Expr _eq Expr
+   64     | Expr _ne Expr
+   65     | Expr _or Expr
+   66     | Expr _and Expr
+   67     | _leftp Expr _rightp
+   68     | LValue
+   69     | _num
+   70     | _dnum
+
+   71 condition: Expr
+   72          | expression
+
+   73 $@2: %empty
+
+   74 selectionStmt: _if _leftp condition $@2 _rightp Stmtlist
+
+   75 $@3: %empty
+
+   76 $@4: %empty
+
+   77 whileStmt: _while $@3 _leftp condition $@4 _rightp Stmtlist
+
+   78 $@5: %empty
+
+   79 $@6: %empty
+
+   80 $@7: %empty
+
+   81 $@8: %empty
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition _semicolon $@7 condition _rightp $@8 Stmtlist
+
+   83 breakStmt: _break _semicolon
+
+   84 Stmtlist: _leftb statementList _rightb
+   85         | statement
+   86         | _semicolon
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+_or (258) 65
+_and (259) 66
+_eq (260) 63
+_ne (261) 64
+_lt (262) 59
+_le (263) 60
+_gt (264) 62
+_ge (265) 61
+_minus (266) 33 54
+_plus (267) 32 53
+_mul (268) 42 55
+_div (269) 43 56
+_modulo (270) 44 57
+_uminus (271) 58
+_char (272) 25
+_int (273) 8 27
+_float (274) 29
+_double (275) 30
+_short (276) 26
+_long (277) 28
+_else (278)
+_break (279) 83
+_struct (280)
+_main (281) 8
+_assign (282) 34 35
+_import (283) 6
+_leftb (284) 8 84
+_rightb (285) 8 84
+_leftp (286) 8 51 67 74 77 82
+_rightp (287) 8 51 67 74 77 82
+_leftsp (288) 23 24 38 39
+_rightsp (289) 23 24 38 39
+_comma (290) 19
+_semicolon (291) 17 18 82 83 86
+_colon (292)
+_void (293)
+_eofile (294) 8
+_id (295) 6 21 22 36 39
+_charcons (296)
+_num (297) 23 24 52 69
+_dnum (298) 70
+_if (299) 74
+_while (300) 77
+_for (301) 82
+
+
+Nonterminals, with rules where they appear
+
+$accept (47)
+    on left: 0
+Stmt (48)
+    on left: 1, on right: 0
+program (49)
+    on left: 3, on right: 1
+$@1 (50)
+    on left: 2, on right: 3
+importlist (51)
+    on left: 4 5, on right: 3 4
+importstmnt (52)
+    on left: 6, on right: 4 5
+declarationList (53)
+    on left: 7, on right: 3
+Pgm (54)
+    on left: 8, on right: 7
+statementList (55)
+    on left: 9 10, on right: 8 9 84
+statement (56)
+    on left: 11 12 13 14 15 16, on right: 9 10 85
+expressionStmt (57)
+    on left: 17, on right: 11
+vardeclaration (58)
+    on left: 18, on right: 12
+varList (59)
+    on left: 19 20, on right: 18 19
+mutable (60)
+    on left: 21 22, on right: 19 20 49
+dimList (61)
+    on left: 23 24, on right: 22 23
+typeSpecifier (62)
+    on left: 25 26 27 28 29 30, on right: 18
+Expr (63)
+    on left: 31 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69
+    70, on right: 34 38 39 53 54 55 56 57 58 59 60 61 62 63 64 65 66
+    67 71
+sumop (64)
+    on left: 32 33, on right: 40 47
+expression (65)
+    on left: 34 35, on right: 17 35 51 72
+LValue (66)
+    on left: 36 37, on right: 34 35 68
+arrayDims (67)
+    on left: 38 39, on right: 37 38
+sumExpression (68)
+    on left: 40 41, on right: 31 40
+mulop (69)
+    on left: 42 43 44, on right: 45
+term (70)
+    on left: 45 46, on right: 40 41 45
+unaryExpression (71)
+    on left: 47 48, on right: 45 46 47
+factor (72)
+    on left: 49 50, on right: 48
+immutable (73)
+    on left: 51 52, on right: 50
+condition (74)
+    on left: 71 72, on right: 74 77 82
+selectionStmt (75)
+    on left: 74, on right: 13
+$@2 (76)
+    on left: 73, on right: 74
+whileStmt (77)
+    on left: 77, on right: 14
+$@3 (78)
+    on left: 75, on right: 77
+$@4 (79)
+    on left: 76, on right: 77
+forStmt (80)
+    on left: 82, on right: 15
+$@5 (81)
+    on left: 78, on right: 82
+$@6 (82)
+    on left: 79, on right: 82
+$@7 (83)
+    on left: 80, on right: 82
+$@8 (84)
+    on left: 81, on right: 82
+breakStmt (85)
+    on left: 83, on right: 16
+Stmtlist (86)
+    on left: 84 85 86, on right: 74 77 82
+
+
+State 0
+
+    0 $accept: . Stmt $end
+
+    _import  shift, and go to state 1
+
+    Stmt         go to state 2
+    program      go to state 3
+    importlist   go to state 4
+    importstmnt  go to state 5
+
+
+State 1
+
+    6 importstmnt: _import . _id
+
+    _id  shift, and go to state 6
+
+
+State 2
+
+    0 $accept: Stmt . $end
+
+    $end  shift, and go to state 7
+
+
+State 3
+
+    1 Stmt: program .
+
+    $default  reduce using rule 1 (Stmt)
+
+
+State 4
+
+    3 program: importlist . $@1 declarationList
+    4 importlist: importlist . importstmnt
+
+    _import  shift, and go to state 1
+
+    $default  reduce using rule 2 ($@1)
+
+    $@1          go to state 8
+    importstmnt  go to state 9
+
+
+State 5
+
+    5 importlist: importstmnt .
+
+    $default  reduce using rule 5 (importlist)
+
+
+State 6
+
+    6 importstmnt: _import _id .
+
+    $default  reduce using rule 6 (importstmnt)
+
+
+State 7
+
+    0 $accept: Stmt $end .
+
+    $default  accept
+
+
+State 8
+
+    3 program: importlist $@1 . declarationList
+
+    _int  shift, and go to state 10
+
+    declarationList  go to state 11
+    Pgm              go to state 12
+
+
+State 9
+
+    4 importlist: importlist importstmnt .
+
+    $default  reduce using rule 4 (importlist)
+
+
+State 10
+
+    8 Pgm: _int . _main _leftp _rightp _leftb statementList _rightb _eofile
+
+    _main  shift, and go to state 13
+
+
+State 11
+
+    3 program: importlist $@1 declarationList .
+
+    $default  reduce using rule 3 (program)
+
+
+State 12
+
+    7 declarationList: Pgm .
+
+    $default  reduce using rule 7 (declarationList)
+
+
+State 13
+
+    8 Pgm: _int _main . _leftp _rightp _leftb statementList _rightb _eofile
+
+    _leftp  shift, and go to state 14
+
+
+State 14
+
+    8 Pgm: _int _main _leftp . _rightp _leftb statementList _rightb _eofile
+
+    _rightp  shift, and go to state 15
+
+
+State 15
+
+    8 Pgm: _int _main _leftp _rightp . _leftb statementList _rightb _eofile
+
+    _leftb  shift, and go to state 16
+
+
+State 16
+
+    8 Pgm: _int _main _leftp _rightp _leftb . statementList _rightb _eofile
+
+    _char    shift, and go to state 17
+    _int     shift, and go to state 18
+    _float   shift, and go to state 19
+    _double  shift, and go to state 20
+    _short   shift, and go to state 21
+    _long    shift, and go to state 22
+    _break   shift, and go to state 23
+    _id      shift, and go to state 24
+    _if      shift, and go to state 25
+    _while   shift, and go to state 26
+    _for     shift, and go to state 27
+
+    statementList   go to state 28
+    statement       go to state 29
+    expressionStmt  go to state 30
+    vardeclaration  go to state 31
+    typeSpecifier   go to state 32
+    expression      go to state 33
+    LValue          go to state 34
+    arrayDims       go to state 35
+    selectionStmt   go to state 36
+    whileStmt       go to state 37
+    forStmt         go to state 38
+    breakStmt       go to state 39
+
+
+State 17
+
+   25 typeSpecifier: _char .
+
+    $default  reduce using rule 25 (typeSpecifier)
+
+
+State 18
+
+   27 typeSpecifier: _int .
+
+    $default  reduce using rule 27 (typeSpecifier)
+
+
+State 19
+
+   29 typeSpecifier: _float .
+
+    $default  reduce using rule 29 (typeSpecifier)
+
+
+State 20
+
+   30 typeSpecifier: _double .
+
+    $default  reduce using rule 30 (typeSpecifier)
+
+
+State 21
+
+   26 typeSpecifier: _short .
+
+    $default  reduce using rule 26 (typeSpecifier)
+
+
+State 22
+
+   28 typeSpecifier: _long .
+
+    $default  reduce using rule 28 (typeSpecifier)
+
+
+State 23
+
+   83 breakStmt: _break . _semicolon
+
+    _semicolon  shift, and go to state 40
+
+
+State 24
+
+   36 LValue: _id .
+   39 arrayDims: _id . _leftsp Expr _rightsp
+
+    _leftsp  shift, and go to state 41
+
+    $default  reduce using rule 36 (LValue)
+
+
+State 25
+
+   74 selectionStmt: _if . _leftp condition $@2 _rightp Stmtlist
+
+    _leftp  shift, and go to state 42
+
+
+State 26
+
+   77 whileStmt: _while . $@3 _leftp condition $@4 _rightp Stmtlist
+
+    $default  reduce using rule 75 ($@3)
+
+    $@3  go to state 43
+
+
+State 27
+
+   82 forStmt: _for . $@5 _leftp condition _semicolon $@6 condition _semicolon $@7 condition _rightp $@8 Stmtlist
+
+    $default  reduce using rule 78 ($@5)
+
+    $@5  go to state 44
+
+
+State 28
+
+    8 Pgm: _int _main _leftp _rightp _leftb statementList . _rightb _eofile
+    9 statementList: statementList . statement
+
+    _char    shift, and go to state 17
+    _int     shift, and go to state 18
+    _float   shift, and go to state 19
+    _double  shift, and go to state 20
+    _short   shift, and go to state 21
+    _long    shift, and go to state 22
+    _break   shift, and go to state 23
+    _rightb  shift, and go to state 45
+    _id      shift, and go to state 24
+    _if      shift, and go to state 25
+    _while   shift, and go to state 26
+    _for     shift, and go to state 27
+
+    statement       go to state 46
+    expressionStmt  go to state 30
+    vardeclaration  go to state 31
+    typeSpecifier   go to state 32
+    expression      go to state 33
+    LValue          go to state 34
+    arrayDims       go to state 35
+    selectionStmt   go to state 36
+    whileStmt       go to state 37
+    forStmt         go to state 38
+    breakStmt       go to state 39
+
+
+State 29
+
+   10 statementList: statement .
+
+    $default  reduce using rule 10 (statementList)
+
+
+State 30
+
+   11 statement: expressionStmt .
+
+    $default  reduce using rule 11 (statement)
+
+
+State 31
+
+   12 statement: vardeclaration .
+
+    $default  reduce using rule 12 (statement)
+
+
+State 32
+
+   18 vardeclaration: typeSpecifier . varList _semicolon
+
+    _id  shift, and go to state 47
+
+    varList  go to state 48
+    mutable  go to state 49
+
+
+State 33
+
+   17 expressionStmt: expression . _semicolon
+
+    _semicolon  shift, and go to state 50
+
+
+State 34
+
+   34 expression: LValue . _assign Expr
+   35           | LValue . _assign expression
+
+    _assign  shift, and go to state 51
+
+
+State 35
+
+   37 LValue: arrayDims .
+   38 arrayDims: arrayDims . _leftsp Expr _rightsp
+
+    _leftsp  shift, and go to state 52
+
+    $default  reduce using rule 37 (LValue)
+
+
+State 36
+
+   13 statement: selectionStmt .
+
+    $default  reduce using rule 13 (statement)
+
+
+State 37
+
+   14 statement: whileStmt .
+
+    $default  reduce using rule 14 (statement)
+
+
+State 38
+
+   15 statement: forStmt .
+
+    $default  reduce using rule 15 (statement)
+
+
+State 39
+
+   16 statement: breakStmt .
+
+    $default  reduce using rule 16 (statement)
+
+
+State 40
+
+   83 breakStmt: _break _semicolon .
+
+    $default  reduce using rule 83 (breakStmt)
+
+
+State 41
+
+   39 arrayDims: _id _leftsp . Expr _rightsp
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 61
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 42
+
+   74 selectionStmt: _if _leftp . condition $@2 _rightp Stmtlist
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 69
+    sumop            go to state 62
+    expression       go to state 70
+    LValue           go to state 71
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+    condition        go to state 72
+
+
+State 43
+
+   77 whileStmt: _while $@3 . _leftp condition $@4 _rightp Stmtlist
+
+    _leftp  shift, and go to state 73
+
+
+State 44
+
+   82 forStmt: _for $@5 . _leftp condition _semicolon $@6 condition _semicolon $@7 condition _rightp $@8 Stmtlist
+
+    _leftp  shift, and go to state 74
+
+
+State 45
+
+    8 Pgm: _int _main _leftp _rightp _leftb statementList _rightb . _eofile
+
+    _eofile  shift, and go to state 75
+
+
+State 46
+
+    9 statementList: statementList statement .
+
+    $default  reduce using rule 9 (statementList)
+
+
+State 47
+
+   21 mutable: _id .
+   22        | _id . dimList
+
+    _leftsp  shift, and go to state 76
+
+    $default  reduce using rule 21 (mutable)
+
+    dimList  go to state 77
+
+
+State 48
+
+   18 vardeclaration: typeSpecifier varList . _semicolon
+   19 varList: varList . _comma mutable
+
+    _comma      shift, and go to state 78
+    _semicolon  shift, and go to state 79
+
+
+State 49
+
+   20 varList: mutable .
+
+    $default  reduce using rule 20 (varList)
+
+
+State 50
+
+   17 expressionStmt: expression _semicolon .
+
+    $default  reduce using rule 17 (expressionStmt)
+
+
+State 51
+
+   34 expression: LValue _assign . Expr
+   35           | LValue _assign . expression
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 80
+    sumop            go to state 62
+    expression       go to state 81
+    LValue           go to state 71
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 52
+
+   38 arrayDims: arrayDims _leftsp . Expr _rightsp
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 82
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 53
+
+   33 sumop: _minus .
+
+    $default  reduce using rule 33 (sumop)
+
+
+State 54
+
+   32 sumop: _plus .
+
+    $default  reduce using rule 32 (sumop)
+
+
+State 55
+
+   58 Expr: _uminus . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 83
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 56
+
+   51 immutable: _leftp . expression _rightp
+   67 Expr: _leftp . Expr _rightp
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 84
+    sumop            go to state 62
+    expression       go to state 85
+    LValue           go to state 71
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 57
+
+   21 mutable: _id .
+   22        | _id . dimList
+   36 LValue: _id .
+   39 arrayDims: _id . _leftsp Expr _rightsp
+
+    _leftsp  shift, and go to state 86
+
+    _or         reduce using rule 21 (mutable)
+    _or         [reduce using rule 36 (LValue)]
+    _and        reduce using rule 21 (mutable)
+    _and        [reduce using rule 36 (LValue)]
+    _eq         reduce using rule 21 (mutable)
+    _eq         [reduce using rule 36 (LValue)]
+    _ne         reduce using rule 21 (mutable)
+    _ne         [reduce using rule 36 (LValue)]
+    _lt         reduce using rule 21 (mutable)
+    _lt         [reduce using rule 36 (LValue)]
+    _le         reduce using rule 21 (mutable)
+    _le         [reduce using rule 36 (LValue)]
+    _gt         reduce using rule 21 (mutable)
+    _gt         [reduce using rule 36 (LValue)]
+    _ge         reduce using rule 21 (mutable)
+    _ge         [reduce using rule 36 (LValue)]
+    _minus      reduce using rule 21 (mutable)
+    _minus      [reduce using rule 36 (LValue)]
+    _plus       reduce using rule 21 (mutable)
+    _plus       [reduce using rule 36 (LValue)]
+    _mul        reduce using rule 21 (mutable)
+    _mul        [reduce using rule 36 (LValue)]
+    _div        reduce using rule 21 (mutable)
+    _div        [reduce using rule 36 (LValue)]
+    _modulo     reduce using rule 21 (mutable)
+    _modulo     [reduce using rule 36 (LValue)]
+    _assign     reduce using rule 36 (LValue)
+    _rightp     reduce using rule 21 (mutable)
+    _rightp     [reduce using rule 36 (LValue)]
+    _rightsp    reduce using rule 21 (mutable)
+    _rightsp    [reduce using rule 36 (LValue)]
+    _semicolon  reduce using rule 21 (mutable)
+    _semicolon  [reduce using rule 36 (LValue)]
+    $default    reduce using rule 21 (mutable)
+
+    dimList  go to state 77
+
+
+State 58
+
+   52 immutable: _num .
+   69 Expr: _num .
+
+    _or         reduce using rule 52 (immutable)
+    _or         [reduce using rule 69 (Expr)]
+    _and        reduce using rule 52 (immutable)
+    _and        [reduce using rule 69 (Expr)]
+    _eq         reduce using rule 52 (immutable)
+    _eq         [reduce using rule 69 (Expr)]
+    _ne         reduce using rule 52 (immutable)
+    _ne         [reduce using rule 69 (Expr)]
+    _lt         reduce using rule 52 (immutable)
+    _lt         [reduce using rule 69 (Expr)]
+    _le         reduce using rule 52 (immutable)
+    _le         [reduce using rule 69 (Expr)]
+    _gt         reduce using rule 52 (immutable)
+    _gt         [reduce using rule 69 (Expr)]
+    _ge         reduce using rule 52 (immutable)
+    _ge         [reduce using rule 69 (Expr)]
+    _minus      reduce using rule 52 (immutable)
+    _minus      [reduce using rule 69 (Expr)]
+    _plus       reduce using rule 52 (immutable)
+    _plus       [reduce using rule 69 (Expr)]
+    _mul        reduce using rule 52 (immutable)
+    _mul        [reduce using rule 69 (Expr)]
+    _div        reduce using rule 52 (immutable)
+    _div        [reduce using rule 69 (Expr)]
+    _modulo     reduce using rule 52 (immutable)
+    _modulo     [reduce using rule 69 (Expr)]
+    _rightp     reduce using rule 52 (immutable)
+    _rightp     [reduce using rule 69 (Expr)]
+    _rightsp    reduce using rule 52 (immutable)
+    _rightsp    [reduce using rule 69 (Expr)]
+    _semicolon  reduce using rule 52 (immutable)
+    _semicolon  [reduce using rule 69 (Expr)]
+    $default    reduce using rule 52 (immutable)
+
+
+State 59
+
+   70 Expr: _dnum .
+
+    $default  reduce using rule 70 (Expr)
+
+
+State 60
+
+   49 factor: mutable .
+
+    $default  reduce using rule 49 (factor)
+
+
+State 61
+
+   39 arrayDims: _id _leftsp Expr . _rightsp
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _or       shift, and go to state 87
+    _and      shift, and go to state 88
+    _eq       shift, and go to state 89
+    _ne       shift, and go to state 90
+    _lt       shift, and go to state 91
+    _le       shift, and go to state 92
+    _gt       shift, and go to state 93
+    _ge       shift, and go to state 94
+    _minus    shift, and go to state 95
+    _plus     shift, and go to state 96
+    _mul      shift, and go to state 97
+    _div      shift, and go to state 98
+    _modulo   shift, and go to state 99
+    _rightsp  shift, and go to state 100
+
+
+State 62
+
+   47 unaryExpression: sumop . unaryExpression
+
+    _minus  shift, and go to state 53
+    _plus   shift, and go to state 54
+    _leftp  shift, and go to state 101
+    _id     shift, and go to state 47
+    _num    shift, and go to state 102
+
+    mutable          go to state 60
+    sumop            go to state 62
+    unaryExpression  go to state 103
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 63
+
+   68 Expr: LValue .
+
+    $default  reduce using rule 68 (Expr)
+
+
+State 64
+
+   31 Expr: sumExpression .
+   40 sumExpression: sumExpression . sumop term
+
+    _minus  shift, and go to state 53
+    _plus   shift, and go to state 54
+
+    _minus    [reduce using rule 31 (Expr)]
+    _plus     [reduce using rule 31 (Expr)]
+    $default  reduce using rule 31 (Expr)
+
+    sumop  go to state 104
+
+
+State 65
+
+   41 sumExpression: term .
+   45 term: term . mulop unaryExpression
+
+    _mul     shift, and go to state 105
+    _div     shift, and go to state 106
+    _modulo  shift, and go to state 107
+
+    _mul      [reduce using rule 41 (sumExpression)]
+    _div      [reduce using rule 41 (sumExpression)]
+    _modulo   [reduce using rule 41 (sumExpression)]
+    $default  reduce using rule 41 (sumExpression)
+
+    mulop  go to state 108
+
+
+State 66
+
+   46 term: unaryExpression .
+
+    $default  reduce using rule 46 (term)
+
+
+State 67
+
+   48 unaryExpression: factor .
+
+    $default  reduce using rule 48 (unaryExpression)
+
+
+State 68
+
+   50 factor: immutable .
+
+    $default  reduce using rule 50 (factor)
+
+
+State 69
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+   71 condition: Expr .
+
+    _or      shift, and go to state 87
+    _and     shift, and go to state 88
+    _eq      shift, and go to state 89
+    _ne      shift, and go to state 90
+    _lt      shift, and go to state 91
+    _le      shift, and go to state 92
+    _gt      shift, and go to state 93
+    _ge      shift, and go to state 94
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 71 (condition)
+
+
+State 70
+
+   72 condition: expression .
+
+    $default  reduce using rule 72 (condition)
+
+
+State 71
+
+   34 expression: LValue . _assign Expr
+   35           | LValue . _assign expression
+   68 Expr: LValue .
+
+    _assign  shift, and go to state 51
+
+    $default  reduce using rule 68 (Expr)
+
+
+State 72
+
+   74 selectionStmt: _if _leftp condition . $@2 _rightp Stmtlist
+
+    $default  reduce using rule 73 ($@2)
+
+    $@2  go to state 109
+
+
+State 73
+
+   77 whileStmt: _while $@3 _leftp . condition $@4 _rightp Stmtlist
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 69
+    sumop            go to state 62
+    expression       go to state 70
+    LValue           go to state 71
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+    condition        go to state 110
+
+
+State 74
+
+   82 forStmt: _for $@5 _leftp . condition _semicolon $@6 condition _semicolon $@7 condition _rightp $@8 Stmtlist
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 69
+    sumop            go to state 62
+    expression       go to state 70
+    LValue           go to state 71
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+    condition        go to state 111
+
+
+State 75
+
+    8 Pgm: _int _main _leftp _rightp _leftb statementList _rightb _eofile .
+
+    $default  reduce using rule 8 (Pgm)
+
+
+State 76
+
+   24 dimList: _leftsp . _num _rightsp
+
+    _num  shift, and go to state 112
+
+
+State 77
+
+   22 mutable: _id dimList .
+   23 dimList: dimList . _leftsp _num _rightsp
+
+    _leftsp  shift, and go to state 113
+
+    $default  reduce using rule 22 (mutable)
+
+
+State 78
+
+   19 varList: varList _comma . mutable
+
+    _id  shift, and go to state 47
+
+    mutable  go to state 114
+
+
+State 79
+
+   18 vardeclaration: typeSpecifier varList _semicolon .
+
+    $default  reduce using rule 18 (vardeclaration)
+
+
+State 80
+
+   34 expression: LValue _assign Expr .
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _or      shift, and go to state 87
+    _and     shift, and go to state 88
+    _eq      shift, and go to state 89
+    _ne      shift, and go to state 90
+    _lt      shift, and go to state 91
+    _le      shift, and go to state 92
+    _gt      shift, and go to state 93
+    _ge      shift, and go to state 94
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 34 (expression)
+
+
+State 81
+
+   35 expression: LValue _assign expression .
+
+    $default  reduce using rule 35 (expression)
+
+
+State 82
+
+   38 arrayDims: arrayDims _leftsp Expr . _rightsp
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _or       shift, and go to state 87
+    _and      shift, and go to state 88
+    _eq       shift, and go to state 89
+    _ne       shift, and go to state 90
+    _lt       shift, and go to state 91
+    _le       shift, and go to state 92
+    _gt       shift, and go to state 93
+    _ge       shift, and go to state 94
+    _minus    shift, and go to state 95
+    _plus     shift, and go to state 96
+    _mul      shift, and go to state 97
+    _div      shift, and go to state 98
+    _modulo   shift, and go to state 99
+    _rightsp  shift, and go to state 115
+
+
+State 83
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   58     | _uminus Expr .
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    $default  reduce using rule 58 (Expr)
+
+
+State 84
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+   67     | _leftp Expr . _rightp
+
+    _or      shift, and go to state 87
+    _and     shift, and go to state 88
+    _eq      shift, and go to state 89
+    _ne      shift, and go to state 90
+    _lt      shift, and go to state 91
+    _le      shift, and go to state 92
+    _gt      shift, and go to state 93
+    _ge      shift, and go to state 94
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+    _rightp  shift, and go to state 116
+
+
+State 85
+
+   51 immutable: _leftp expression . _rightp
+
+    _rightp  shift, and go to state 117
+
+
+State 86
+
+   24 dimList: _leftsp . _num _rightsp
+   39 arrayDims: _id _leftsp . Expr _rightsp
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 118
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 61
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 87
+
+   65 Expr: Expr _or . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 119
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 88
+
+   66 Expr: Expr _and . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 120
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 89
+
+   63 Expr: Expr _eq . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 121
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 90
+
+   64 Expr: Expr _ne . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 122
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 91
+
+   59 Expr: Expr _lt . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 123
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 92
+
+   60 Expr: Expr _le . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 124
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 93
+
+   62 Expr: Expr _gt . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 125
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 94
+
+   61 Expr: Expr _ge . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 126
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 95
+
+   54 Expr: Expr _minus . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 127
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 96
+
+   53 Expr: Expr _plus . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 128
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 97
+
+   55 Expr: Expr _mul . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 129
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 98
+
+   56 Expr: Expr _div . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 130
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 99
+
+   57 Expr: Expr _modulo . Expr
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 131
+    sumop            go to state 62
+    LValue           go to state 63
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 100
+
+   39 arrayDims: _id _leftsp Expr _rightsp .
+
+    $default  reduce using rule 39 (arrayDims)
+
+
+State 101
+
+   51 immutable: _leftp . expression _rightp
+
+    _id  shift, and go to state 24
+
+    expression  go to state 85
+    LValue      go to state 34
+    arrayDims   go to state 35
+
+
+State 102
+
+   52 immutable: _num .
+
+    $default  reduce using rule 52 (immutable)
+
+
+State 103
+
+   47 unaryExpression: sumop unaryExpression .
+
+    $default  reduce using rule 47 (unaryExpression)
+
+
+State 104
+
+   40 sumExpression: sumExpression sumop . term
+
+    _minus  shift, and go to state 53
+    _plus   shift, and go to state 54
+    _leftp  shift, and go to state 101
+    _id     shift, and go to state 47
+    _num    shift, and go to state 102
+
+    mutable          go to state 60
+    sumop            go to state 62
+    term             go to state 132
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 105
+
+   42 mulop: _mul .
+
+    $default  reduce using rule 42 (mulop)
+
+
+State 106
+
+   43 mulop: _div .
+
+    $default  reduce using rule 43 (mulop)
+
+
+State 107
+
+   44 mulop: _modulo .
+
+    $default  reduce using rule 44 (mulop)
+
+
+State 108
+
+   45 term: term mulop . unaryExpression
+
+    _minus  shift, and go to state 53
+    _plus   shift, and go to state 54
+    _leftp  shift, and go to state 101
+    _id     shift, and go to state 47
+    _num    shift, and go to state 102
+
+    mutable          go to state 60
+    sumop            go to state 62
+    unaryExpression  go to state 133
+    factor           go to state 67
+    immutable        go to state 68
+
+
+State 109
+
+   74 selectionStmt: _if _leftp condition $@2 . _rightp Stmtlist
+
+    _rightp  shift, and go to state 134
+
+
+State 110
+
+   77 whileStmt: _while $@3 _leftp condition . $@4 _rightp Stmtlist
+
+    $default  reduce using rule 76 ($@4)
+
+    $@4  go to state 135
+
+
+State 111
+
+   82 forStmt: _for $@5 _leftp condition . _semicolon $@6 condition _semicolon $@7 condition _rightp $@8 Stmtlist
+
+    _semicolon  shift, and go to state 136
+
+
+State 112
+
+   24 dimList: _leftsp _num . _rightsp
+
+    _rightsp  shift, and go to state 137
+
+
+State 113
+
+   23 dimList: dimList _leftsp . _num _rightsp
+
+    _num  shift, and go to state 138
+
+
+State 114
+
+   19 varList: varList _comma mutable .
+
+    $default  reduce using rule 19 (varList)
+
+
+State 115
+
+   38 arrayDims: arrayDims _leftsp Expr _rightsp .
+
+    $default  reduce using rule 38 (arrayDims)
+
+
+State 116
+
+   67 Expr: _leftp Expr _rightp .
+
+    $default  reduce using rule 67 (Expr)
+
+
+State 117
+
+   51 immutable: _leftp expression _rightp .
+
+    $default  reduce using rule 51 (immutable)
+
+
+State 118
+
+   24 dimList: _leftsp _num . _rightsp
+   52 immutable: _num .
+   69 Expr: _num .
+
+    _rightsp  shift, and go to state 137
+
+    _or       reduce using rule 52 (immutable)
+    _or       [reduce using rule 69 (Expr)]
+    _and      reduce using rule 52 (immutable)
+    _and      [reduce using rule 69 (Expr)]
+    _eq       reduce using rule 52 (immutable)
+    _eq       [reduce using rule 69 (Expr)]
+    _ne       reduce using rule 52 (immutable)
+    _ne       [reduce using rule 69 (Expr)]
+    _lt       reduce using rule 52 (immutable)
+    _lt       [reduce using rule 69 (Expr)]
+    _le       reduce using rule 52 (immutable)
+    _le       [reduce using rule 69 (Expr)]
+    _gt       reduce using rule 52 (immutable)
+    _gt       [reduce using rule 69 (Expr)]
+    _ge       reduce using rule 52 (immutable)
+    _ge       [reduce using rule 69 (Expr)]
+    _minus    reduce using rule 52 (immutable)
+    _minus    [reduce using rule 69 (Expr)]
+    _plus     reduce using rule 52 (immutable)
+    _plus     [reduce using rule 69 (Expr)]
+    _mul      reduce using rule 52 (immutable)
+    _mul      [reduce using rule 69 (Expr)]
+    _div      reduce using rule 52 (immutable)
+    _div      [reduce using rule 69 (Expr)]
+    _modulo   reduce using rule 52 (immutable)
+    _modulo   [reduce using rule 69 (Expr)]
+    _rightsp  [reduce using rule 52 (immutable)]
+    _rightsp  [reduce using rule 69 (Expr)]
+    $default  reduce using rule 52 (immutable)
+
+
+State 119
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   65     | Expr _or Expr .
+   66     | Expr . _and Expr
+
+    _and     shift, and go to state 88
+    _eq      shift, and go to state 89
+    _ne      shift, and go to state 90
+    _lt      shift, and go to state 91
+    _le      shift, and go to state 92
+    _gt      shift, and go to state 93
+    _ge      shift, and go to state 94
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 65 (Expr)
+
+
+State 120
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+   66     | Expr _and Expr .
+
+    _eq      shift, and go to state 89
+    _ne      shift, and go to state 90
+    _lt      shift, and go to state 91
+    _le      shift, and go to state 92
+    _gt      shift, and go to state 93
+    _ge      shift, and go to state 94
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 66 (Expr)
+
+
+State 121
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   63     | Expr _eq Expr .
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _lt      shift, and go to state 91
+    _le      shift, and go to state 92
+    _gt      shift, and go to state 93
+    _ge      shift, and go to state 94
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 63 (Expr)
+
+
+State 122
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   64     | Expr _ne Expr .
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _lt      shift, and go to state 91
+    _le      shift, and go to state 92
+    _gt      shift, and go to state 93
+    _ge      shift, and go to state 94
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 64 (Expr)
+
+
+State 123
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   59     | Expr _lt Expr .
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 59 (Expr)
+
+
+State 124
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   60     | Expr _le Expr .
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 60 (Expr)
+
+
+State 125
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   62     | Expr _gt Expr .
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 62 (Expr)
+
+
+State 126
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   61     | Expr _ge Expr .
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _minus   shift, and go to state 95
+    _plus    shift, and go to state 96
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 61 (Expr)
+
+
+State 127
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   54     | Expr _minus Expr .
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 54 (Expr)
+
+
+State 128
+
+   53 Expr: Expr . _plus Expr
+   53     | Expr _plus Expr .
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    _mul     shift, and go to state 97
+    _div     shift, and go to state 98
+    _modulo  shift, and go to state 99
+
+    $default  reduce using rule 53 (Expr)
+
+
+State 129
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   55     | Expr _mul Expr .
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    $default  reduce using rule 55 (Expr)
+
+
+State 130
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   56     | Expr _div Expr .
+   57     | Expr . _modulo Expr
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    $default  reduce using rule 56 (Expr)
+
+
+State 131
+
+   53 Expr: Expr . _plus Expr
+   54     | Expr . _minus Expr
+   55     | Expr . _mul Expr
+   56     | Expr . _div Expr
+   57     | Expr . _modulo Expr
+   57     | Expr _modulo Expr .
+   59     | Expr . _lt Expr
+   60     | Expr . _le Expr
+   61     | Expr . _ge Expr
+   62     | Expr . _gt Expr
+   63     | Expr . _eq Expr
+   64     | Expr . _ne Expr
+   65     | Expr . _or Expr
+   66     | Expr . _and Expr
+
+    $default  reduce using rule 57 (Expr)
+
+
+State 132
+
+   40 sumExpression: sumExpression sumop term .
+   45 term: term . mulop unaryExpression
+
+    _mul     shift, and go to state 105
+    _div     shift, and go to state 106
+    _modulo  shift, and go to state 107
+
+    _mul      [reduce using rule 40 (sumExpression)]
+    _div      [reduce using rule 40 (sumExpression)]
+    _modulo   [reduce using rule 40 (sumExpression)]
+    $default  reduce using rule 40 (sumExpression)
+
+    mulop  go to state 108
+
+
+State 133
+
+   45 term: term mulop unaryExpression .
+
+    $default  reduce using rule 45 (term)
+
+
+State 134
+
+   74 selectionStmt: _if _leftp condition $@2 _rightp . Stmtlist
+
+    _char       shift, and go to state 17
+    _int        shift, and go to state 18
+    _float      shift, and go to state 19
+    _double     shift, and go to state 20
+    _short      shift, and go to state 21
+    _long       shift, and go to state 22
+    _break      shift, and go to state 23
+    _leftb      shift, and go to state 139
+    _semicolon  shift, and go to state 140
+    _id         shift, and go to state 24
+    _if         shift, and go to state 25
+    _while      shift, and go to state 26
+    _for        shift, and go to state 27
+
+    statement       go to state 141
+    expressionStmt  go to state 30
+    vardeclaration  go to state 31
+    typeSpecifier   go to state 32
+    expression      go to state 33
+    LValue          go to state 34
+    arrayDims       go to state 35
+    selectionStmt   go to state 36
+    whileStmt       go to state 37
+    forStmt         go to state 38
+    breakStmt       go to state 39
+    Stmtlist        go to state 142
+
+
+State 135
+
+   77 whileStmt: _while $@3 _leftp condition $@4 . _rightp Stmtlist
+
+    _rightp  shift, and go to state 143
+
+
+State 136
+
+   82 forStmt: _for $@5 _leftp condition _semicolon . $@6 condition _semicolon $@7 condition _rightp $@8 Stmtlist
+
+    $default  reduce using rule 79 ($@6)
+
+    $@6  go to state 144
+
+
+State 137
+
+   24 dimList: _leftsp _num _rightsp .
+
+    $default  reduce using rule 24 (dimList)
+
+
+State 138
+
+   23 dimList: dimList _leftsp _num . _rightsp
+
+    _rightsp  shift, and go to state 145
+
+
+State 139
+
+   84 Stmtlist: _leftb . statementList _rightb
+
+    _char    shift, and go to state 17
+    _int     shift, and go to state 18
+    _float   shift, and go to state 19
+    _double  shift, and go to state 20
+    _short   shift, and go to state 21
+    _long    shift, and go to state 22
+    _break   shift, and go to state 23
+    _id      shift, and go to state 24
+    _if      shift, and go to state 25
+    _while   shift, and go to state 26
+    _for     shift, and go to state 27
+
+    statementList   go to state 146
+    statement       go to state 29
+    expressionStmt  go to state 30
+    vardeclaration  go to state 31
+    typeSpecifier   go to state 32
+    expression      go to state 33
+    LValue          go to state 34
+    arrayDims       go to state 35
+    selectionStmt   go to state 36
+    whileStmt       go to state 37
+    forStmt         go to state 38
+    breakStmt       go to state 39
+
+
+State 140
+
+   86 Stmtlist: _semicolon .
+
+    $default  reduce using rule 86 (Stmtlist)
+
+
+State 141
+
+   85 Stmtlist: statement .
+
+    $default  reduce using rule 85 (Stmtlist)
+
+
+State 142
+
+   74 selectionStmt: _if _leftp condition $@2 _rightp Stmtlist .
+
+    $default  reduce using rule 74 (selectionStmt)
+
+
+State 143
+
+   77 whileStmt: _while $@3 _leftp condition $@4 _rightp . Stmtlist
+
+    _char       shift, and go to state 17
+    _int        shift, and go to state 18
+    _float      shift, and go to state 19
+    _double     shift, and go to state 20
+    _short      shift, and go to state 21
+    _long       shift, and go to state 22
+    _break      shift, and go to state 23
+    _leftb      shift, and go to state 139
+    _semicolon  shift, and go to state 140
+    _id         shift, and go to state 24
+    _if         shift, and go to state 25
+    _while      shift, and go to state 26
+    _for        shift, and go to state 27
+
+    statement       go to state 141
+    expressionStmt  go to state 30
+    vardeclaration  go to state 31
+    typeSpecifier   go to state 32
+    expression      go to state 33
+    LValue          go to state 34
+    arrayDims       go to state 35
+    selectionStmt   go to state 36
+    whileStmt       go to state 37
+    forStmt         go to state 38
+    breakStmt       go to state 39
+    Stmtlist        go to state 147
+
+
+State 144
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 . condition _semicolon $@7 condition _rightp $@8 Stmtlist
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 69
+    sumop            go to state 62
+    expression       go to state 70
+    LValue           go to state 71
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+    condition        go to state 148
+
+
+State 145
+
+   23 dimList: dimList _leftsp _num _rightsp .
+
+    $default  reduce using rule 23 (dimList)
+
+
+State 146
+
+    9 statementList: statementList . statement
+   84 Stmtlist: _leftb statementList . _rightb
+
+    _char    shift, and go to state 17
+    _int     shift, and go to state 18
+    _float   shift, and go to state 19
+    _double  shift, and go to state 20
+    _short   shift, and go to state 21
+    _long    shift, and go to state 22
+    _break   shift, and go to state 23
+    _rightb  shift, and go to state 149
+    _id      shift, and go to state 24
+    _if      shift, and go to state 25
+    _while   shift, and go to state 26
+    _for     shift, and go to state 27
+
+    statement       go to state 46
+    expressionStmt  go to state 30
+    vardeclaration  go to state 31
+    typeSpecifier   go to state 32
+    expression      go to state 33
+    LValue          go to state 34
+    arrayDims       go to state 35
+    selectionStmt   go to state 36
+    whileStmt       go to state 37
+    forStmt         go to state 38
+    breakStmt       go to state 39
+
+
+State 147
+
+   77 whileStmt: _while $@3 _leftp condition $@4 _rightp Stmtlist .
+
+    $default  reduce using rule 77 (whileStmt)
+
+
+State 148
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition . _semicolon $@7 condition _rightp $@8 Stmtlist
+
+    _semicolon  shift, and go to state 150
+
+
+State 149
+
+   84 Stmtlist: _leftb statementList _rightb .
+
+    $default  reduce using rule 84 (Stmtlist)
+
+
+State 150
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition _semicolon . $@7 condition _rightp $@8 Stmtlist
+
+    $default  reduce using rule 80 ($@7)
+
+    $@7  go to state 151
+
+
+State 151
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition _semicolon $@7 . condition _rightp $@8 Stmtlist
+
+    _minus   shift, and go to state 53
+    _plus    shift, and go to state 54
+    _uminus  shift, and go to state 55
+    _leftp   shift, and go to state 56
+    _id      shift, and go to state 57
+    _num     shift, and go to state 58
+    _dnum    shift, and go to state 59
+
+    mutable          go to state 60
+    Expr             go to state 69
+    sumop            go to state 62
+    expression       go to state 70
+    LValue           go to state 71
+    arrayDims        go to state 35
+    sumExpression    go to state 64
+    term             go to state 65
+    unaryExpression  go to state 66
+    factor           go to state 67
+    immutable        go to state 68
+    condition        go to state 152
+
+
+State 152
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition _semicolon $@7 condition . _rightp $@8 Stmtlist
+
+    _rightp  shift, and go to state 153
+
+
+State 153
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition _semicolon $@7 condition _rightp . $@8 Stmtlist
+
+    $default  reduce using rule 81 ($@8)
+
+    $@8  go to state 154
+
+
+State 154
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition _semicolon $@7 condition _rightp $@8 . Stmtlist
+
+    _char       shift, and go to state 17
+    _int        shift, and go to state 18
+    _float      shift, and go to state 19
+    _double     shift, and go to state 20
+    _short      shift, and go to state 21
+    _long       shift, and go to state 22
+    _break      shift, and go to state 23
+    _leftb      shift, and go to state 139
+    _semicolon  shift, and go to state 140
+    _id         shift, and go to state 24
+    _if         shift, and go to state 25
+    _while      shift, and go to state 26
+    _for        shift, and go to state 27
+
+    statement       go to state 141
+    expressionStmt  go to state 30
+    vardeclaration  go to state 31
+    typeSpecifier   go to state 32
+    expression      go to state 33
+    LValue          go to state 34
+    arrayDims       go to state 35
+    selectionStmt   go to state 36
+    whileStmt       go to state 37
+    forStmt         go to state 38
+    breakStmt       go to state 39
+    Stmtlist        go to state 155
+
+
+State 155
+
+   82 forStmt: _for $@5 _leftp condition _semicolon $@6 condition _semicolon $@7 condition _rightp $@8 Stmtlist .
+
+    $default  reduce using rule 82 (forStmt)

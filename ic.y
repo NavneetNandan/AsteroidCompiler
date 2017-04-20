@@ -74,12 +74,16 @@ TFLABEL tflabel;
 %type <attr> LValue
 %type <attr> expression
 %type <attr> Expr
+%type <attr> sumExpression
+%type <attr> unaryExpression
+%type <attr> term immutable factor mutable
 %type <attr> arrayDims
 %type <attr> condition
 %token <tflabel> _if
 %token <tflabel> _while
 %token <forLabel> _for
-%type <no> typeSpecifier
+%type <no> typeSpecifier sumop mulop
+
 %%
 Stmt 	: program;
 program : importlist{
@@ -124,7 +128,7 @@ vardeclaration   : typeSpecifier varList _semicolon
 	;
 
 varList : varList _comma mutable	
-	 |mutable
+	|mutable
 	;
 mutable:	_id 			{
 					sym.nameLen = strlen($1.name);
@@ -203,6 +207,16 @@ typeSpecifier   :
 				}
 	;
 
+Expr: sumExpression;
+//	| logicalExpression; add logical
+
+
+sumop : _plus {
+		$$='+';
+		}
+		| _minus{
+			$$='-';
+		};
 expression: LValue  _assign  Expr {
 					$$ = $1;
 					opnd2.type = NOP;
@@ -334,113 +348,87 @@ arrayDims	: arrayDims _leftsp Expr _rightsp
 		}
 	; 
 
-Expr	: Expr _plus Expr 	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,PLUS,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-			  	}
-	| Expr _minus Expr	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,MINUS,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-			  	}
- 
-	| Expr _mul Expr 	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,MUL,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-                         	}
-	| Expr _div Expr 	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,DIV,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-			 	}
-	| Expr _modulo Expr 	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,MOD,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-			    	}
-	| _uminus Expr 		{
-			  		createTemp($$.name);
-					opnd2.type = NOP;
-			  		addCode(quadTable,labelpending,UMINUS,$2,opnd2, $$);
-			   		$$.type = TID;
-			   		sym=copySymbol($2,$$.name);
-			   		addSymbolHash(sym);
-		       		}
-	| Expr _lt Expr 	{
-			  		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,LT,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
+sumExpression: sumExpression sumop term {
+				switch($2){
+					case '+':
+						createTemp($$.name);
+		 		   		addCode(quadTable,labelpending,PLUS,$1,$3,$$);
+				   		$$.type = TID;
+				   		sym=createTempSymbolWithType($1,$3,$$);
+				   		addSymbolHash(sym);
+					break;
+					case '-': 
+						createTemp($$.name);
+		 		   		addCode(quadTable,labelpending,MINUS,$1,$3,$$);
+				   		$$.type = TID;
+				   		sym=createTempSymbolWithType($1,$3,$$);
+				   		addSymbolHash(sym);
+			   		break; 
 				}
-	   
-	| Expr _le Expr 	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,LE,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
+			}
+			| term{//manage this
+				$$=$1;
+			};
+
+mulop : _mul{
+			$$='*';
+		}
+		| _div{
+			$$='/';
+		}
+		| _modulo{
+			$$='%';
+		};
+
+term : term mulop unaryExpression {
+				switch($2){
+					case '*': 
+						createTemp($$.name);
+		 		   		addCode(quadTable,labelpending,MUL,$1,$3,$$);
+				   		$$.type = TID;
+				   		sym=createTempSymbolWithType($1,$3,$$);
+				   		addSymbolHash(sym);
+					break;
+					case '/':
+						createTemp($$.name);
+		 		   		addCode(quadTable,labelpending,DIV,$1,$3,$$);
+				   		$$.type = TID;
+				   		sym=createTempSymbolWithType($1,$3,$$);
+				   		addSymbolHash(sym);
+					break; 
+					case '%': 
+						createTemp($$.name);
+		 		   		addCode(quadTable,labelpending,MOD,$1,$3,$$);
+				   		$$.type = TID;
+				   		sym=createTempSymbolWithType($1,$3,$$);
+				   		addSymbolHash(sym);
+				   	break;
 				}
-	| Expr _ge Expr 	{ 
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,GE,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
+			}
+		| unaryExpression {
+			$$=$1;
+
+		};
+
+
+unaryExpression : sumop unaryExpression{
+					switch($1){
+						case _plus:
+						break;
+						case _minus: 			  		createTemp($$.name);
+							opnd2.type = NOP;
+					  		addCode(quadTable,labelpending,UMINUS,$2,opnd2, $$);
+					   		$$.type = TID;
+					   		sym=copySymbol($2,$$.name);
+					   		addSymbolHash(sym);
+						break;
+					}
 				}
-	| Expr _gt Expr 	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,GT,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-				}
-	| Expr _eq Expr 	{ 
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,EQ,$1,$3,$$);
-			        	$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-			    	}
-	| Expr _ne Expr  	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,NE,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-			      	}			
-	| Expr _or Expr 	{
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,OR,$1,$3,$$);
-			   		$$.type = TID;
-			   		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-				}
-	| Expr _and Expr 	{ 
-			   		createTemp($$.name);
-	 		   		addCode(quadTable,labelpending,AND,$1,$3,$$);
-			   		$$.type = TID;
-			  		sym=createTempSymbolWithType($1,$3,$$);
-			   		addSymbolHash(sym);
-			 	}
-	| _leftp  Expr _rightp 	{
-					$$ = $2;
-			   		$$.type = TID;
-				}
-	| LValue 		{
-					if($1.subtype==BASIC)
+				| factor{
+					$$=$1;
+				};
+factor : LValue{
+			if($1.subtype==BASIC)
 						$$=$1;
 					else if($1.subtype == ARRAY)
 					{
@@ -466,16 +454,135 @@ Expr	: Expr _plus Expr 	{
 						sym = initSymbol();
 						copyAttr2Symbol($$,&sym);
 			   			addSymbolHash(sym);
+			   		}
+		}
+		| immutable{
+		 	$$=$1;
+		}
+;
+immutable : _leftp expression _rightp {
+			$$=$2;	
+			}
+			| _num{
+				$$=$1;
+			} ; // define call
+// Expr	: Expr _plus Expr 	{
+			   		
+// 			  	}
+// 	| Expr _minus Expr	{
+			   		
+// 			  	}
+ 
+// 	| Expr _mul Expr 	{
+			   		
+//                          	}
+// 	| Expr _div Expr 	{
+			   		
+// 			 	}
+// 	| Expr _modulo Expr 	{
+			   		
+// 			    	}
+// 	| _uminus Expr 		{
+
+// 		       		}
+// 	| Expr _lt Expr 	{
+// 			  		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,LT,$1,$3,$$);
+// 			   		$$.type = TID;
+// 			   		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 				}
+	   
+// 	| Expr _le Expr 	{
+// 			   		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,LE,$1,$3,$$);
+// 			   		$$.type = TID;
+// 			   		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 				}
+// 	| Expr _ge Expr 	{ 
+// 			   		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,GE,$1,$3,$$);
+// 			   		$$.type = TID;
+// 			   		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 				}
+// 	| Expr _gt Expr 	{
+// 			   		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,GT,$1,$3,$$);
+// 			   		$$.type = TID;
+// 			   		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 				}
+// 	| Expr _eq Expr 	{ 
+// 			   		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,EQ,$1,$3,$$);
+// 			        	$$.type = TID;
+// 			   		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 			    	}
+// 	| Expr _ne Expr  	{
+// 			   		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,NE,$1,$3,$$);
+// 			   		$$.type = TID;
+// 			   		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 			      	}			
+// 	| Expr _or Expr 	{
+// 			   		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,OR,$1,$3,$$);
+// 			   		$$.type = TID;
+// 			   		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 				}
+// 	| Expr _and Expr 	{ 
+// 			   		createTemp($$.name);
+// 	 		   		addCode(quadTable,labelpending,AND,$1,$3,$$);
+// 			   		$$.type = TID;
+// 			  		sym=createTempSymbolWithType($1,$3,$$);
+// 			   		addSymbolHash(sym);
+// 			 	}
+// 	| _leftp  Expr _rightp 	{
+// 					$$ = $2;
+// 			   		$$.type = TID;
+// 				}
+// 	| LValue 		{
+					// if($1.subtype==BASIC)
+					// 	$$=$1;
+					// else if($1.subtype == ARRAY)
+					// {
+					// 	opnd1 = $1;			//opnd1 is the base address of array
+					// 	strcpy(opnd1.name,$1.name);
+					// 	opnd1.type = TID;
+					// 	opnd1.subtype = BASIC;
+					// 	opnd1.datatype = $1.datatype;
+
+					// 	opnd2 = $1;		       //opnd2 is the displacement of array
+					// 	strcpy(opnd2.name,$1.offsetName);
+					// 	opnd2.type = TID;
+					// 	opnd2.subtype = BASIC;
+					// 	opnd2.datatype = $1.datatype;
+
+					// 	$$ = $1;
+			  //  			createTemp($$.name);
+					// 	$$.type=TID;
+					// 	$$.subtype=ARRAY;
+					// 	$$.datatype=$1.datatype;
+					// 	printf("RASSIGN = %d\n",RASSIGN);
+	 		 //   			addCode(quadTable,labelpending,RASSIGN,opnd1,opnd2,$$);
+					// 	sym = initSymbol();
+					// 	copyAttr2Symbol($$,&sym);
+			  //  			addSymbolHash(sym);
 						
-					}
-				}
-	| _num 			{
-					$$ = $1;
-				}		
-	| _dnum 		{
-					$$=$1;
-				}	
-        ;
+// 					}
+// 				}
+// 	| _num 			{
+// 					$$ = $1;
+// 				}		
+// 	| _dnum 		{
+// 					$$=$1;
+// 				}	
+//         ;
 
 condition: Expr 		{
 					$$ = $1;
