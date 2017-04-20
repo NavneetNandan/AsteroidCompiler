@@ -61,7 +61,7 @@ TFLABEL tflabel;
 %left _minus _plus
 %left _mul _div _modulo
 %nonassoc _uminus 
-%token _char _int _float  _double _short _long
+%token _char _int _float  _double _short _long _not
 %token _else _break _struct
 %token _main _assign _import
 %token _leftb _rightb _leftp _rightp _leftsp _rightsp _comma _semicolon _colon
@@ -69,20 +69,20 @@ TFLABEL tflabel;
 %token _eofile
 %token <attr> _id
 %token <attr> _charcons
-%token  <attr> _num
+%token  <attr> _num _true _false
 %token  <attr> _dnum
 %type <attr> LValue
 %type <attr> expression
 %type <attr> Expr
-%type <attr> sumExpression
-%type <attr> unaryExpression
+%type <attr> sumExpression logicalExpression andExpression
+%type <attr> unaryExpression unaryRelExpression relExpression 
 %type <attr> term immutable factor mutable
 %type <attr> arrayDims
 %type <attr> condition
 %token <tflabel> _if
 %token <tflabel> _while
 %token <forLabel> _for
-%type <no> typeSpecifier sumop mulop
+%type <no> typeSpecifier sumop mulop relop
 
 %%
 Stmt 	: program;
@@ -207,9 +207,8 @@ typeSpecifier   :
 				}
 	;
 
-Expr: sumExpression;
-//	| logicalExpression; add logical
-
+Expr: sumExpression	
+	| logicalExpression; 
 
 sumop : _plus {
 		$$='+';
@@ -583,6 +582,105 @@ immutable : _leftp expression _rightp {
 // 					$$=$1;
 // 				}	
 //         ;
+
+
+logicalExpression : andExpression{
+					$$ = $1;
+					};
+
+andExpression : andExpression _and unaryRelExpression{
+					createTemp($$.name);
+	 		   		addCode(quadTable,labelpending,AND,$1,$3,$$);
+			   		$$.type = TID;
+			  		sym=createTempSymbolWithType($1,$3,$$);
+			   		addSymbolHash(sym);
+				}
+				| andExpression _or unaryRelExpression{
+					createTemp($$.name);
+	 		   		addCode(quadTable,labelpending,OR,$1,$3,$$);
+			   		$$.type = TID;
+			   		sym=createTempSymbolWithType($1,$3,$$);
+			   		addSymbolHash(sym);
+				}
+				| unaryRelExpression{
+					$$=$1;
+				};
+
+relop : _le {
+			$$=1;
+			}
+		| _ge{
+			$$=2;
+			}
+		| _ne{
+			$$=3;
+			} 
+		| _lt{
+			$$=4;
+			}
+		| _gt{
+			$$=5;
+			};
+		| _eq{
+			$$=6;
+		}
+
+relExpression : sumExpression relop sumExpression{
+	switch($2)
+	{
+		case 1://<=
+			createTemp($$.name);
+		   	addCode(quadTable,labelpending,LE,$1,$3,$$);
+	   		$$.type = TID;
+	   		sym=createTempSymbolWithType($1,$3,$$);
+	   		addSymbolHash(sym);
+		break;
+		case 2://>=
+			createTemp($$.name);
+		   		addCode(quadTable,labelpending,GE,$1,$3,$$);
+	   		$$.type = TID;
+	   		sym=createTempSymbolWithType($1,$3,$$);
+	   		addSymbolHash(sym);
+		break;
+		case 4://<
+			createTemp($$.name);
+		   		addCode(quadTable,labelpending,LT,$1,$3,$$);
+	   		$$.type = TID;
+	   		sym=createTempSymbolWithType($1,$3,$$);
+	   		addSymbolHash(sym);
+		break;
+		case 5://>
+			createTemp($$.name);
+		   	addCode(quadTable,labelpending,GT,$1,$3,$$);
+	   		$$.type = TID;
+	   		sym=createTempSymbolWithType($1,$3,$$);
+	   		addSymbolHash(sym);
+		break;
+		case 3://!=
+			createTemp($$.name);
+		   		addCode(quadTable,labelpending,NE,$1,$3,$$);
+	   		$$.type = TID;
+	   		sym=createTempSymbolWithType($1,$3,$$);
+	   		addSymbolHash(sym);
+		break;
+		case 6:
+			createTemp($$.name);
+		   	addCode(quadTable,labelpending,EQ,$1,$3,$$);
+	        $$.type = TID;
+	   		sym=createTempSymbolWithType($1,$3,$$);
+	   		addSymbolHash(sym);
+		break;
+	}
+};
+unaryRelExpression : _not unaryRelExpression | relExpression{
+						$$=$1;
+					} 
+					| _true{
+					$$=$1;
+					}
+					| _false{
+						$$=$1;
+					}
 
 condition: Expr 		{
 					$$ = $1;

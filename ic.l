@@ -35,6 +35,7 @@
 "+"		{BEGIN 0;return _plus;}
 <BM>"-"		{BEGIN 0;return _minus;}
 "-"		{return _uminus;}
+"!"		{BEGIN 0; return _not;}
 "*"		{BEGIN 0;return _mul;}
 "/"		{BEGIN 0;return _div;}
 "%"		{BEGIN 0;return _modulo;}
@@ -47,6 +48,20 @@
 "&&"		{BEGIN 0;return _and;}
 "||"		{BEGIN 0;return _or;}
 "import"    {return _import;}
+"true"    {BEGIN BM;
+		 	strcpy(yylval.attr.name,yytext); 
+		 	yylval.attr.type=CONST; 
+		 	yylval.attr.datatype=INT; 
+		 	yylval.attr.value.iVal=1;
+		 	return _true;}
+"false"    {
+			BEGIN BM;
+		 	strcpy(yylval.attr.name,yytext); 
+		 	yylval.attr.type=CONST; 
+		 	yylval.attr.datatype=INT; 
+		 	yylval.attr.value.iVal=0;
+			return _false;
+			}
 [a-zA-Z][a-zA-Z0-9]*	{
 				BEGIN BM;
 				strcpy(yylval.attr.name,yytext); 

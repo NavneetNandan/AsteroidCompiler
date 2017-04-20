@@ -65,30 +65,33 @@ extern int yydebug;
     _double = 275,
     _short = 276,
     _long = 277,
-    _else = 278,
-    _break = 279,
-    _struct = 280,
-    _main = 281,
-    _assign = 282,
-    _import = 283,
-    _leftb = 284,
-    _rightb = 285,
-    _leftp = 286,
-    _rightp = 287,
-    _leftsp = 288,
-    _rightsp = 289,
-    _comma = 290,
-    _semicolon = 291,
-    _colon = 292,
-    _void = 293,
-    _eofile = 294,
-    _id = 295,
-    _charcons = 296,
-    _num = 297,
-    _dnum = 298,
-    _if = 299,
-    _while = 300,
-    _for = 301
+    _not = 278,
+    _else = 279,
+    _break = 280,
+    _struct = 281,
+    _main = 282,
+    _assign = 283,
+    _import = 284,
+    _leftb = 285,
+    _rightb = 286,
+    _leftp = 287,
+    _rightp = 288,
+    _leftsp = 289,
+    _rightsp = 290,
+    _comma = 291,
+    _semicolon = 292,
+    _colon = 293,
+    _void = 294,
+    _eofile = 295,
+    _id = 296,
+    _charcons = 297,
+    _num = 298,
+    _true = 299,
+    _false = 300,
+    _dnum = 301,
+    _if = 302,
+    _while = 303,
+    _for = 304
   };
 #endif
 
@@ -117,7 +120,7 @@ union YYSTYPE
 	char nextStmtLabel[10];
  }forLabel;
 
-#line 121 "ic.tab.h" /* yacc.c:1909  */
+#line 124 "ic.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
