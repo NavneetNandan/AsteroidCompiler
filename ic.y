@@ -672,7 +672,8 @@ relExpression : sumExpression relop sumExpression{
 		break;
 	}
 };
-unaryRelExpression : _not unaryRelExpression | relExpression{
+unaryRelExpression : _not unaryRelExpression 
+					| relExpression{
 						$$=$1;
 					} 
 					| _true{
@@ -682,15 +683,8 @@ unaryRelExpression : _not unaryRelExpression | relExpression{
 						$$=$1;
 					}
 
-condition: Expr 		{
-					$$ = $1;
-				}
-	| expression		{
-					$$ = $1;
-				}
-	;
 
-selectionStmt  : _if _leftp condition	{
+selectionStmt  : _if _leftp logicalExpression	{
 					createLabel($1.falseLabel);
 					opnd2.type = CONST;
 					opnd2.datatype = INT;
@@ -717,7 +711,7 @@ whileStmt: _while		{
 printf("In while->%s: ....\n",$1.trueLabel);
 					strcpy(labelpending,$1.trueLabel);
 				}
-	_leftp condition	{
+	_leftp logicalExpression	{
 				      	createLabel($1.falseLabel);
 printf("In while->%s: ....\n",$1.falseLabel);
 					opnd2.type = CONST;
@@ -749,10 +743,10 @@ forStmt : _for			{
 					createLabel($1.cond2TestLabel);
 					createLabel($1.nextStmtLabel);
 				} 
-  _leftp condition _semicolon 	{ 
+  _leftp expression _semicolon 	{ 
 					strcpy(labelpending,$1.cond2Label);
 				} 
-	condition _semicolon 	{
+	logicalExpression _semicolon 	{
 					result.type=LABEL;
 					strcpy(result.name,$1.cond2TestLabel);
 					opnd1.type=NOP;
@@ -761,7 +755,7 @@ forStmt : _for			{
 					//addCode(quadTable," ",GOTO," "," ",$1.cond2TestLabel);
 					strcpy(labelpending,$1.cond3Label);
 				} 
-	condition _rightp 	{
+	expression _rightp 	{
 					result.type=LABEL;
 					strcpy(result.name,$1.cond2Label);
 					opnd1.type=NOP;
@@ -786,7 +780,7 @@ forStmt : _for			{
 					opnd2.type=NOP;
 					result.type=NOP;
 					addCode(quadTable,labelpending,NOP,opnd1,opnd2,result);
-				}	
+				}
 	;
 
 breakStmt: _break _semicolon
