@@ -1,0 +1,3 @@
+In Linux Platform
+$ make
+$ ./icexe test_asteroid_filename_ending_with_ast

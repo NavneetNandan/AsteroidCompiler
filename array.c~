@@ -1,0 +1,14 @@
+int main()
+{
+	int i,idx,nums;
+	int a;
+	int b[10];
+	int data[20];
+	int data1[20][5];
+	int data2[20][5][3];
+	float sum;
+	sum = 0;
+	
+	sum = sum / nums;
+}
+

@@ -1,0 +1,9 @@
+import stdlib
+int main(){
+int num1,num2,avg,sum;
+num1=6;
+num2=7;
+sum=num1+num2;
+avg=sum/2;
+}
+

@@ -1,4 +1,5 @@
-main()
+import stdlib
+int main()
 {
 	int idx,nums,sum;
 	float average;

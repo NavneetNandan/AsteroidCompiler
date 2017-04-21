@@ -1,0 +1,8 @@
+import stdlib
+int main(){
+float s,v,u,a,t;
+u=3;
+t=10;
+v=u+a*t;
+s=u*t+a*t*t/2;
+}
